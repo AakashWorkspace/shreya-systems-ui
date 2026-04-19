@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  body {
+    @apply bg-ink-950 text-gray-200 font-sans;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212,160,23,0.08) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.3); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(212,160,23,0.6); }
+
+  ::selection { background: rgba(212,160,23,0.25); }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold-400 hover:bg-gold-300 text-ink-950 font-semibold px-5 py-2.5 rounded-lg
+           transition-all duration-200 text-sm tracking-wide
+           disabled:opacity-40 disabled:cursor-not-allowed
+           active:scale-[0.98] shadow-sm;
+  }
+
+  .btn-ghost {
+    @apply border border-ink-600 hover:border-gold-400/50 text-gray-300 hover:text-gold-300
+           font-medium px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
+           active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400
+           font-medium px-4 py-2 rounded-lg transition-all duration-200 text-sm;
+  }
+
+  .input-field {
+    @apply bg-ink-800 border border-ink-600 focus:border-gold-400/60 focus:ring-1
+           focus:ring-gold-400/20 text-gray-100 placeholder-gray-600 rounded-lg px-3.5 py-2.5
+           text-sm transition-all duration-200 outline-none w-full;
+  }
+
+  .card {
+    @apply bg-ink-900 border border-ink-700 rounded-xl shadow-card;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-gold-400/70 mb-3;
+  }
+
+  .gold-rule {
+    @apply border-t border-gold-400/15;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.35s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
