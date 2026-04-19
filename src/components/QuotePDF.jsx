@@ -3,15 +3,7 @@ import {
   Document, Page, Text, View, StyleSheet, Font, Image,
 } from '@react-pdf/renderer'
 
-// Register a clean font pair
-Font.register({
-  family: 'Lato',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2', fontWeight: 400 },
-    { src: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2', fontWeight: 700 },
-    { src: 'https://fonts.gstatic.com/s/lato/v24/S6u8w4BMUTPHh30wWyWavCr0.woff2', fontStyle: 'italic' },
-  ],
-})
+// react-pdf only supports TTF/OTF — use built-in Helvetica (no network needed)
 
 const C = {
   ink:      '#0f0f1a',
@@ -27,7 +19,7 @@ const C = {
 }
 
 const s = StyleSheet.create({
-  page:          { fontFamily: 'Lato', backgroundColor: C.white, fontSize: 9, color: '#1a1a2e' },
+  page:          { fontFamily: 'Helvetica', backgroundColor: C.white, fontSize: 9, color: '#1a1a2e' },
 
   // Header band
   headerBand:    { backgroundColor: C.ink, paddingHorizontal: 32, paddingTop: 24, paddingBottom: 20 },
@@ -192,10 +184,7 @@ export default function QuotePDF({ quote }) {
             <Text style={s.partyLabel}>Bill To</Text>
             <Text style={s.partyName}>{client_name || '—'}</Text>
             <Text style={s.partyMeta}>
-              {client_address || ''}{client_address ? '\n' : ''}
-              {client_gstin ? `GSTIN: ${client_gstin}\n` : ''}
-              {client_phone ? `Phone: ${client_phone}\n` : ''}
-              {client_email ? `Email: ${client_email}` : ''}
+              {[client_address, client_gstin ? `GSTIN: ${client_gstin}` : '', client_phone ? `Phone: ${client_phone}` : '', client_email ? `Email: ${client_email}` : ''].filter(Boolean).join('\n')}
             </Text>
           </View>
         </View>
