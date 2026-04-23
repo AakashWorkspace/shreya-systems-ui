@@ -8,17 +8,25 @@ import QuotePDF from './QuotePDF'
 const CGST_RATE = 0.09
 const SGST_RATE = 0.09
 
-function generateQuoteNumber() {
-  const now = new Date()
-  const fy = now.getMonth() >= 3
-    ? `${String(now.getFullYear()).slice(-2)}-${String(now.getFullYear() + 1).slice(-2)}`
-    : `${String(now.getFullYear() - 1).slice(-2)}-${String(now.getFullYear()).slice(-2)}`
-  const seq = Math.floor(1000 + Math.random() * 9000)
-  return `SS/${fy}/${seq}`
-}
-
 export default function CreateQuotation({ onSaved }) {
-  const [quoteNumber] = useState(generateQuoteNumber)
+  const [quoteNumber, setQuoteNumber] = useState('')
+  const [quoteNumLoading, setQuoteNumLoading] = useState(true)
+
+  // Fetch next sequential quote number from backend on mount
+  useEffect(() => {
+    api.get('/api/quotations/next-number')
+      .then(({ data }) => setQuoteNumber(data.quote_number))
+      .catch(() => {
+        // Fallback: generate locally if API fails
+        const now = new Date()
+        const fy = now.getMonth() >= 3
+          ? `${String(now.getFullYear()).slice(-2)}-${String(now.getFullYear() + 1).slice(-2)}`
+          : `${String(now.getFullYear() - 1).slice(-2)}-${String(now.getFullYear()).slice(-2)}`
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        setQuoteNumber(`SS/${fy}/${month}001`)
+      })
+      .finally(() => setQuoteNumLoading(false))
+  }, [])
   const [client, setClient] = useState({
     client_name: '', client_address: '', client_gstin: '',
     client_phone: '', client_email: '',
@@ -128,7 +136,7 @@ export default function CreateQuotation({ onSaved }) {
             <div>
               <p className="section-label">New Quotation</p>
               <p className="font-mono text-gold-400 text-sm font-medium tracking-widest">
-                {quoteNumber}
+                {quoteNumLoading ? 'Generating…' : quoteNumber}
               </p>
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-400 bg-ink-800 px-3 py-1.5 rounded-full border border-ink-600">

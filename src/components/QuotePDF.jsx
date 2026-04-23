@@ -124,6 +124,20 @@ export default function QuotePDF({ quote }) {
     total_amount, cgst_amount, sgst_amount, grand_total, notes,
   } = quote
 
+  // Compact mode: shrink spacing when many items so everything fits on 1 A4 page
+  const compact = items.length >= 5
+  const c = compact
+    ? {
+        headerPadV: 14,  rowPadV: 5,   partiesPadV: 10,
+        totalsTop:  8,   termsTop: 8,  sigTop: 10,  footerTop: 8,
+        rowFontSz:  7.5, descFontSz: 8,
+      }
+    : {
+        headerPadV: 24,  rowPadV: 8,   partiesPadV: 18,
+        totalsTop:  14,  termsTop: 20, sigTop: 24,  footerTop: 20,
+        rowFontSz:  8,   descFontSz: 8.5,
+      }
+
   const displayDate = date ? new Date(date).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'long', year: 'numeric',
   }) : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -137,7 +151,7 @@ export default function QuotePDF({ quote }) {
       <Page size="A4" style={s.page}>
 
         {/* ── Header Band ── */}
-        <View style={s.headerBand}>
+        <View style={[s.headerBand, { paddingTop: c.headerPadV, paddingBottom: c.headerPadV }]}>
           <View style={s.headerRow}>
             <View>
               <Text style={s.companyName}>SHREYA SYSTEMS</Text>
@@ -165,7 +179,7 @@ export default function QuotePDF({ quote }) {
         <View style={s.goldDivider} />
 
         {/* ── Parties ── */}
-        <View style={s.partiesRow}>
+        <View style={[s.partiesRow, { paddingVertical: c.partiesPadV }]}>
           <View style={s.partyBox}>
             <Text style={s.partyLabel}>Bill From</Text>
             <Text style={s.partyName}>Shreya Systems</Text>
@@ -211,15 +225,15 @@ export default function QuotePDF({ quote }) {
             </View>
           )}
           {items.map((item, i) => (
-            <View key={i} style={i % 2 === 0 ? s.rowEven : s.rowOdd}>
+            <View key={i} style={[i % 2 === 0 ? s.rowEven : s.rowOdd, { paddingVertical: c.rowPadV }]}>
               <Text style={s.tdSn}>{i + 1}</Text>
               <View style={s.tdDesc}>
-                <Text style={s.tdDescName}>{item.item_name || item.name}</Text>
+                <Text style={[s.tdDescName, { fontSize: c.descFontSz }]}>{item.item_name || item.name}</Text>
                 {item.description ? (
-                  <Text style={s.tdDescSub}>{item.description}</Text>
+                  <Text style={[s.tdDescSub, { fontSize: c.rowFontSz }]}>{item.description}</Text>
                 ) : null}
               </View>
-              <Text style={s.tdHsn}>{item.hsn_code || '—'}</Text>
+              <Text style={[s.tdHsn, { fontSize: c.rowFontSz }]}>{item.hsn_code || '—'}</Text>
               <Text style={s.tdQty}>{item.qty || item.quantity || 1}</Text>
               <Text style={s.tdRate}>{fmt(item.rate)}</Text>
               <Text style={s.tdAmt}>{fmt(item.amount)}</Text>
@@ -228,7 +242,7 @@ export default function QuotePDF({ quote }) {
         </View>
 
         {/* ── Totals ── */}
-        <View style={s.totalsArea}>
+        <View style={[s.totalsArea, { marginTop: c.totalsTop }]}>
           <View style={s.totalsBox}>
             <View style={s.totalRow}>
               <Text style={s.totalLabel}>Subtotal</Text>
@@ -250,7 +264,7 @@ export default function QuotePDF({ quote }) {
         </View>
 
         {/* ── Terms ── */}
-        <View style={s.termsSection}>
+        <View style={[s.termsSection, { marginTop: c.termsTop }]}>
           <Text style={s.termsTitle}>TERMS & CONDITIONS</Text>
           <View style={s.termsGrid}>
             {[
@@ -278,7 +292,7 @@ export default function QuotePDF({ quote }) {
         )}
 
         {/* ── Signature ── */}
-        <View style={s.signatureRow}>
+        <View style={[s.signatureRow, { marginTop: c.sigTop }]}>
           <View style={s.thankBlock}>
             <Text style={s.thankText}>Thank you for choosing Shreya Systems.</Text>
             <Text style={[s.thankText, { marginTop: 2 }]}>
@@ -294,7 +308,7 @@ export default function QuotePDF({ quote }) {
         </View>
 
         {/* ── Footer band ── */}
-        <View style={s.footerBand}>
+        <View style={[s.footerBand, { marginTop: c.footerTop }]}>
           <Text style={s.footerLeft}>
             This is a computer-generated quotation. Prices subject to change without prior notice.
           </Text>
