@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Document, Page, Text, View, StyleSheet, Font, Image,
 } from '@react-pdf/renderer'
+import stampImage from '../images/signature.jpeg'
 
 // react-pdf only supports TTF/OTF — use built-in Helvetica (no network needed)
 
@@ -22,14 +23,14 @@ const s = StyleSheet.create({
   page:          { fontFamily: 'Helvetica', backgroundColor: C.white, fontSize: 9, color: '#1a1a2e' },
 
   // Header band
-  headerBand:    { backgroundColor: C.ink, paddingHorizontal: 32, paddingTop: 24, paddingBottom: 20 },
+  headerBand:    { backgroundColor: '#00a5d6', paddingHorizontal: 32, paddingTop: 24, paddingBottom: 20 },
   headerRow:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  companyName:   { fontSize: 20, fontWeight: 700, color: C.gold, letterSpacing: 2, marginBottom: 4 },
-  companyTagline:{ fontSize: 7.5, color: '#8888aa', letterSpacing: 1 },
-  companyMeta:   { fontSize: 7.5, color: '#aaaacc', lineHeight: 1.6, marginTop: 6 },
-  quoteTitle:    { fontSize: 24, fontWeight: 700, color: C.white, letterSpacing: 3, textAlign: 'right' },
-  quoteMeta:     { fontSize: 8, color: C.muted, textAlign: 'right', marginTop: 4, lineHeight: 1.7 },
-  quoteNumber:   { fontSize: 9, color: C.goldLight, textAlign: 'right', fontWeight: 700 },
+  companyName:   { fontSize: 20, fontWeight: 700, color: '#000a52', letterSpacing: 2, marginBottom: 4 },
+  companyTagline:{ fontSize: 7.5, color: '#000000', letterSpacing: 1 },
+  companyMeta:   { fontSize: 7.5, color: '#000000', lineHeight: 1.6, marginTop: 6 },
+  quoteTitle:    { fontSize: 24, fontWeight: 700, color: '#000000', letterSpacing: 3, textAlign: 'right' },
+  quoteMeta:     { fontSize: 8, color: '#000000', textAlign: 'right', marginTop: 4, lineHeight: 1.7 },
+  quoteNumber:   { fontSize: 9, color: '#000a52', textAlign: 'right', fontWeight: 700 },
 
   // Gold divider
   goldDivider:   { height: 3, backgroundColor: C.gold },
@@ -95,6 +96,7 @@ const s = StyleSheet.create({
   signatureRow:  { paddingHorizontal: 32, marginTop: 24, flexDirection: 'row', justifyContent: 'space-between',
                    alignItems: 'flex-end' },
   sigBlock:      { alignItems: 'flex-end' },
+  stampImg:      { width: 75, height: 75, marginBottom: 6 },
   sigLine:       { width: 120, borderBottomWidth: 1.5, borderBottomColor: C.ink, marginBottom: 4 },
   sigLabel:      { fontSize: 7.5, color: '#888' },
   sigName:       { fontSize: 8.5, fontWeight: 700, color: '#222', marginTop: 1 },
@@ -153,10 +155,7 @@ export default function QuotePDF({ quote }) {
                 {quote_number || 'SS/26-27/----'}
               </Text>
               <Text style={s.quoteMeta}>
-                Date: {displayDate}{'\n'}
-                Taxes: GST {tax_inclusive === 'inclusive' ? 'Inclusive' : 'Exclusive'}{'\n'}
-                Payment: 100% Advance{'\n'}
-                Delivery: 3–4 Business Days
+                Date: {displayDate}
               </Text>
             </View>
           </View>
@@ -287,6 +286,7 @@ export default function QuotePDF({ quote }) {
             </Text>
           </View>
           <View style={s.sigBlock}>
+            <Image src={stampImage} style={s.stampImg} />
             <View style={s.sigLine} />
             <Text style={s.sigLabel}>Authorised Signatory</Text>
             <Text style={s.sigName}>SHREYA SYSTEMS, PUNE</Text>
