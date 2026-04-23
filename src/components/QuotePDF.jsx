@@ -23,7 +23,7 @@ const s = StyleSheet.create({
   page:          { fontFamily: 'Helvetica', backgroundColor: C.white, fontSize: 9, color: '#1a1a2e' },
 
   // Header band
-  headerBand:    { backgroundColor: '#00a5d6', paddingHorizontal: 32, paddingTop: 24, paddingBottom: 20 },
+  headerBand:    { backgroundColor: '#fff8e8', paddingHorizontal: 32, paddingTop: 24, paddingBottom: 20 },
   headerRow:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   companyName:   { fontSize: 20, fontWeight: 700, color: '#000a52', letterSpacing: 2, marginBottom: 4 },
   companyTagline:{ fontSize: 7.5, color: '#000000', letterSpacing: 1 },
@@ -81,10 +81,10 @@ const s = StyleSheet.create({
   // Terms
   termsSection:  { paddingHorizontal: 32, marginTop: 20 },
   termsTitle:    { fontSize: 7, fontWeight: 700, color: C.gold, letterSpacing: 1.5, marginBottom: 6 },
-  termsGrid:     { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
-  termChip:      { backgroundColor: '#f4f0e8', borderRadius: 3, paddingHorizontal: 8, paddingVertical: 4,
-                   borderLeftWidth: 2, borderLeftColor: C.gold },
-  termLabel:     { fontSize: 7, fontWeight: 700, color: '#555', marginBottom: 1 },
+  termsGrid:     { flexDirection: 'column', gap: 3 },
+  termChip:      { backgroundColor: '#f4f0e8', borderRadius: 3, paddingHorizontal: 8, paddingVertical: 5,
+                   borderLeftWidth: 2, borderLeftColor: C.gold, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  termLabel:     { fontSize: 7, fontWeight: 700, color: '#555', width: 60 },
   termValue:     { fontSize: 7.5, color: '#222' },
 
   // Notes
