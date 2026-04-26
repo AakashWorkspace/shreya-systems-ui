@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
-import { Search, Plus, Trash2, Download, Save, ChevronDown } from 'lucide-react'
+import { Search, Plus, Trash2, Download, Save, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../api'
 import QuotePDF from './QuotePDF'
 
 const CGST_RATE = 0.09
 const SGST_RATE = 0.09
+
+// Default terms values
+const DEFAULT_TERMS = {
+  Taxes:     'GST Exclusive',
+  Payment:   '100% Advance',
+  Delivery:  '3-4 Business Days',
+  Scope:     'Supply Only',
+  Documents: 'Tax Invoice',
+  Validity:  '30 Days',
+}
 
 export default function CreateQuotation({ onSaved }) {
   const [quoteNumber, setQuoteNumber] = useState('')
@@ -17,7 +27,6 @@ export default function CreateQuotation({ onSaved }) {
     api.get('/api/quotations/next-number')
       .then(({ data }) => setQuoteNumber(data.quote_number))
       .catch(() => {
-        // Fallback: generate locally if API fails
         const now = new Date()
         const fy = now.getMonth() >= 3
           ? `${String(now.getFullYear()).slice(-2)}-${String(now.getFullYear() + 1).slice(-2)}`
@@ -27,12 +36,75 @@ export default function CreateQuotation({ onSaved }) {
       })
       .finally(() => setQuoteNumLoading(false))
   }, [])
+
   const [client, setClient] = useState({
     client_name: '', client_address: '', client_gstin: '',
     client_phone: '', client_email: '',
   })
+
+  // ── Bill To autocomplete — sourced from existing quotations in the DB ───
+  // Same pattern as items: DB-backed, persists across devices and logins.
+  const [allClients, setAllClients] = useState([])   // deduplicated client list
+  const [clientSuggestions, setClientSuggestions] = useState([])
+  const [showClientSug, setShowClientSug] = useState(false)
+  const clientSugRef = useRef(null)
+
+  // Fetch once on mount — pull unique clients from saved quotations
+  useEffect(() => {
+    api.get('/api/quotations').then(({ data }) => {
+      // Deduplicate by client_name (case-insensitive), keep latest occurrence
+      const seen = new Map()
+      data.forEach(q => {
+        if (!q.client_name?.trim()) return
+        const key = q.client_name.trim().toLowerCase()
+        if (!seen.has(key)) {
+          seen.set(key, {
+            client_name:    q.client_name,
+            client_address: q.client_address || '',
+            client_gstin:   q.client_gstin   || '',
+            client_phone:   q.client_phone   || '',
+            client_email:   q.client_email   || '',
+          })
+        }
+      })
+      setAllClients([...seen.values()])
+    }).catch(() => { /* silent — autocomplete is a nice-to-have */ })
+  }, [])
+
+  useEffect(() => {
+    const fn = (e) => {
+      if (clientSugRef.current && !clientSugRef.current.contains(e.target))
+        setShowClientSug(false)
+    }
+    document.addEventListener('mousedown', fn)
+    return () => document.removeEventListener('mousedown', fn)
+  }, [])
+
+  const handleClientNameChange = (val) => {
+    setClient(c => ({ ...c, client_name: val }))
+    if (val.trim()) {
+      const matches = allClients.filter(c =>
+        c.client_name?.toLowerCase().includes(val.toLowerCase())
+      )
+      setClientSuggestions(matches)
+      setShowClientSug(matches.length > 0)
+    } else {
+      setClientSuggestions(allClients)
+      setShowClientSug(allClients.length > 0)
+    }
+  }
+
+  const selectClientSuggestion = (c) => {
+    setClient(c)
+    setShowClientSug(false)
+  }
+
   const [notes, setNotes] = useState('')
-  const [taxInclusive, setTaxInclusive] = useState('inclusive')
+  const [taxInclusive, setTaxInclusive] = useState('exclusive')
+
+  // ── Editable Terms ──────────────────────────────────────────────────────
+  const [terms, setTerms] = useState({ ...DEFAULT_TERMS })
+  const updateTerm = (key, val) => setTerms(t => ({ ...t, [key]: val }))
 
   // Line item form
   const [search, setSearch] = useState('')
@@ -48,14 +120,14 @@ export default function CreateQuotation({ onSaved }) {
 
   const sugRef = useRef(null)
 
-  // Close dropdown on outside click
+  // Close item dropdown on outside click
   useEffect(() => {
     const fn = (e) => { if (sugRef.current && !sugRef.current.contains(e.target)) setShowSug(false) }
     document.addEventListener('mousedown', fn)
     return () => document.removeEventListener('mousedown', fn)
   }, [])
 
-  // Fetch suggestions
+  // Fetch item suggestions
   useEffect(() => {
     if (!search.trim()) { setSuggestions([]); return }
     const t = setTimeout(async () => {
@@ -92,7 +164,7 @@ export default function CreateQuotation({ onSaved }) {
   const sgst = subtotal * SGST_RATE
   const grandTotal = subtotal + cgst + sgst
 
-  // PDF data
+  // PDF data (includes editable terms)
   const quoteData = {
     quote_number: quoteNumber,
     date: new Date().toISOString(),
@@ -104,6 +176,7 @@ export default function CreateQuotation({ onSaved }) {
     cgst_amount: cgst,
     sgst_amount: sgst,
     grand_total: grandTotal,
+    terms,
   }
 
   const saveQuotation = async () => {
@@ -124,6 +197,8 @@ export default function CreateQuotation({ onSaved }) {
       setSaving(false)
     }
   }
+
+  const termKeys = Object.keys(DEFAULT_TERMS)
 
   return (
     <div className="flex h-full gap-0 overflow-hidden">
@@ -152,15 +227,50 @@ export default function CreateQuotation({ onSaved }) {
             </div>
           </div>
 
-          {/* Client info */}
+          {/* ── Client info with Bill To autocomplete ── */}
           <div className="space-y-3">
-            <p className="section-label">Client Details</p>
+            <p className="section-label">Client Details (Bill To)</p>
             <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2">
-                <input className="input-field" placeholder="Client / Company Name *"
+              {/* Client name with saved-client dropdown */}
+              <div className="col-span-2 relative" ref={clientSugRef}>
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+                <input
+                  className="input-field pl-8"
+                  placeholder="Client / Company Name *"
                   value={client.client_name}
-                  onChange={e => setClient(c => ({ ...c, client_name: e.target.value }))} />
+                  onChange={e => handleClientNameChange(e.target.value)}
+                  onFocus={() => {
+                    const matches = client.client_name?.trim()
+                      ? allClients.filter(c => c.client_name?.toLowerCase().includes(client.client_name.toLowerCase()))
+                      : allClients
+                    if (matches.length > 0) { setClientSuggestions(matches); setShowClientSug(true) }
+                  }}
+                />
+                {showClientSug && clientSuggestions.length > 0 && (
+                  <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-ink-800 border
+                                  border-ink-600 rounded-lg shadow-card overflow-hidden max-h-48 overflow-y-auto">
+                    {clientSuggestions.map((c, i) => (
+                      <button
+                        key={i}
+                        className="w-full flex items-start gap-3 px-3.5 py-2.5 hover:bg-ink-700 transition-colors text-left"
+                        onClick={() => selectClientSuggestion(c)}
+                      >
+                        <User className="w-3.5 h-3.5 text-gold-400 mt-0.5 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-200 truncate font-medium">{c.client_name}</p>
+                          {c.client_address && (
+                            <p className="text-xs text-gray-500 truncate">{c.client_address}</p>
+                          )}
+                        </div>
+                        {c.client_gstin && (
+                          <span className="text-xs text-gray-500 whitespace-nowrap mt-0.5">GST: {c.client_gstin}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
               <input className="input-field" placeholder="Address"
                 value={client.client_address}
                 onChange={e => setClient(c => ({ ...c, client_address: e.target.value }))} />
@@ -206,7 +316,7 @@ export default function CreateQuotation({ onSaved }) {
                           )}
                         </div>
                         <span className="text-gold-400 text-xs font-mono whitespace-nowrap mt-0.5">
-                          ₹{item.rate?.toLocaleString('en-IN')}
+                          Rs.{item.rate?.toLocaleString('en-IN')}
                         </span>
                       </button>
                     ))}
@@ -227,7 +337,7 @@ export default function CreateQuotation({ onSaved }) {
                 <input className="input-field text-xs" type="number" min="1" placeholder="Qty"
                   value={lineItem.qty}
                   onChange={e => setLineItem(l => ({ ...l, qty: parseInt(e.target.value) || 1 }))} />
-                <input className="input-field text-xs" type="number" min="0" placeholder="Rate ₹"
+                <input className="input-field text-xs" type="number" min="0" placeholder="Rate"
                   value={lineItem.rate || ''}
                   onChange={e => setLineItem(l => ({ ...l, rate: parseFloat(e.target.value) || 0 }))} />
               </div>
@@ -235,7 +345,7 @@ export default function CreateQuotation({ onSaved }) {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">
                   Amount: <span className="text-gold-300 font-semibold">
-                    ₹{((lineItem.qty || 1) * (lineItem.rate || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    Rs.{((lineItem.qty || 1) * (lineItem.rate || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </span>
                 </span>
                 <button onClick={addLine} className="btn-primary flex items-center gap-1.5 !py-2 !px-4">
@@ -269,10 +379,10 @@ export default function CreateQuotation({ onSaved }) {
                         </td>
                         <td className="text-center px-2 py-2 text-gray-300">{line.qty}</td>
                         <td className="text-right px-3 py-2 text-gray-300 font-mono">
-                          ₹{line.rate.toLocaleString('en-IN')}
+                          Rs.{line.rate.toLocaleString('en-IN')}
                         </td>
                         <td className="text-right px-3 py-2 text-gold-300 font-mono font-semibold">
-                          ₹{line.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          Rs.{line.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                         <td className="px-2 py-2">
                           <button onClick={() => removeLine(line.id)}
@@ -294,17 +404,34 @@ export default function CreateQuotation({ onSaved }) {
                   ].map(([label, val]) => (
                     <div key={label} className="flex justify-between text-xs text-gray-400">
                       <span>{label}</span>
-                      <span className="font-mono">₹{val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                      <span className="font-mono">Rs.{val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                     </div>
                   ))}
                   <div className="flex justify-between text-sm font-semibold text-gold-300 pt-1.5 border-t border-ink-600">
                     <span>Grand Total</span>
-                    <span className="font-mono">₹{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                    <span className="font-mono">Rs.{grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
             </div>
           )}
+
+          {/* ── Editable Terms & Conditions (2 cols × 3) ── */}
+          <div className="space-y-3">
+            <p className="section-label">Terms &amp; Conditions</p>
+            <div className="grid grid-cols-2 gap-2">
+              {termKeys.map(key => (
+                <div key={key} className="card p-2.5 flex items-center gap-2">
+                  <span className="text-xs text-gold-400 font-semibold w-20 shrink-0">{key}</span>
+                  <input
+                    className="flex-1 bg-transparent border-b border-ink-600 focus:border-gold-400 outline-none text-xs text-gray-200 py-0.5 transition-colors"
+                    value={terms[key]}
+                    onChange={e => updateTerm(key, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Notes */}
           <div>
