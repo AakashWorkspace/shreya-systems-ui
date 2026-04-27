@@ -271,7 +271,7 @@ export default function CreateQuotation({ onSaved }) {
                       >
                         <User className="w-3.5 h-3.5 text-gold-400 mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-200 truncate font-medium">{c.client_name}</p>
+                          <p className="text-sm text-gray-700 truncate font-medium">{c.client_name}</p>
                           {c.client_address && (
                             <p className="text-xs text-gray-500 truncate">{c.client_address}</p>
                           )}
@@ -324,7 +324,7 @@ export default function CreateQuotation({ onSaved }) {
                         onClick={() => selectSuggestion(item)}
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-200 truncate font-medium">{item.name}</p>
+                          <p className="text-sm text-gray-700 truncate font-medium">{item.name}</p>
                           {item.description && (
                             <p className="text-xs text-gray-500 truncate">{item.description}</p>
                           )}
@@ -388,14 +388,14 @@ export default function CreateQuotation({ onSaved }) {
                     {lines.map((line, i) => (
                       <tr key={line.id} className={`border-t border-ink-700 ${i % 2 === 0 ? '' : 'bg-ink-800/30'}`}>
                         <td className="px-3 py-2">
-                          <p className="text-gray-200 font-medium truncate max-w-[160px]">{line.item_name}</p>
+                          <p className="text-gray-700 font-medium truncate max-w-[160px]">{line.item_name}</p>
                           {line.description && <p className="text-gray-600 truncate max-w-[160px]">{line.description}</p>}
                         </td>
-                        <td className="text-center px-2 py-2 text-gray-300">{line.qty}</td>
-                        <td className="text-right px-3 py-2 text-gray-300 font-mono">
+                        <td className="text-center px-2 py-2 text-gray-600">{line.qty}</td>
+                        <td className="text-right px-3 py-2 text-gray-600 font-mono">
                           Rs.{line.rate.toLocaleString('en-IN')}
                         </td>
-                        <td className="text-right px-3 py-2 text-gold-300 font-mono font-semibold">
+                        <td className="text-right px-3 py-2 text-gold-500 font-mono font-semibold">
                           Rs.{line.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                         <td className="px-2 py-2">

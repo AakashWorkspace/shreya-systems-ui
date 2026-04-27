@@ -59,7 +59,7 @@ export default function QuoteHistory() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <p className="section-label">History</p>
-          <h2 className="font-display text-2xl text-white">Quotation Archive</h2>
+          <h2 className="font-display text-2xl text-gray-900">Quotation Archive</h2>
           <p className="text-gray-500 text-sm mt-1">
             {filteredQuotes.length} of {quotes.length} quotation{quotes.length !== 1 ? 's' : ''}
           </p>
@@ -116,7 +116,7 @@ export default function QuoteHistory() {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-gold-300 font-semibold text-sm">
+                       <span className="font-mono text-gold-600 font-semibold text-sm">
                         {q.quote_number}
                       </span>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[q.status] || STATUS_STYLES.draft}`}>
@@ -140,7 +140,7 @@ export default function QuoteHistory() {
                 <div className="flex items-center gap-4 ml-4">
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Grand Total</p>
-                    <p className="font-mono font-semibold text-gold-300">{fmt(q.grand_total || q.total_amount)}</p>
+                      <p className="font-mono font-semibold text-gold-600">{fmt(q.grand_total || q.total_amount)}</p>
                   </div>
 
                   <div className="flex items-center gap-1.5">
@@ -179,11 +179,11 @@ export default function QuoteHistory() {
 
               {/* Expandable items */}
               {expanded === q.id && (
-                <div className="border-t border-ink-700 bg-ink-800/40 px-5 py-4">
+                <div className="border-t border-gray-100 bg-gray-50/50 px-5 py-4">
                   {q.items && q.items.length > 0 ? (
                     <table className="w-full text-xs">
                       <thead>
-                        <tr className="text-gray-500 border-b border-ink-600">
+                        <tr className="text-gray-500 border-b border-gray-200">
                           <th className="text-left py-1.5 font-medium">Item</th>
                           <th className="text-center py-1.5 font-medium w-12">Qty</th>
                           <th className="text-right py-1.5 font-medium w-24">Rate</th>
@@ -192,16 +192,16 @@ export default function QuoteHistory() {
                       </thead>
                       <tbody>
                         {q.items.map((item, i) => (
-                          <tr key={i} className="border-b border-ink-700/40">
+                          <tr key={i} className="border-b border-gray-200">
                             <td className="py-2">
-                              <p className="text-gray-300 font-medium">{item.item_name}</p>
+                              <p className="text-gray-700 font-medium">{item.item_name}</p>
                               {item.description && (
                                 <p className="text-gray-600 mt-0.5 truncate max-w-xs">{item.description}</p>
                               )}
                             </td>
-                            <td className="py-2 text-center text-gray-400">{item.qty}</td>
-                            <td className="py-2 text-right font-mono text-gray-400">{fmt(item.rate)}</td>
-                            <td className="py-2 text-right font-mono text-gold-300 font-semibold">{fmt(item.amount)}</td>
+                             <td className="py-2 text-center text-gray-500">{item.qty}</td>
+                             <td className="py-2 text-right font-mono text-gray-500">{fmt(item.rate)}</td>
+                             <td className="py-2 text-right font-mono text-gold-500 font-semibold">{fmt(item.amount)}</td>
                           </tr>
                         ))}
                       </tbody>

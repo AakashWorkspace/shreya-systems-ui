@@ -39,7 +39,7 @@ export default function AddItem({ onAdded }) {
     <div className="max-w-2xl mx-auto fade-in">
       <div className="mb-8">
         <p className="section-label">Item Catalogue</p>
-        <h2 className="font-display text-2xl text-white">Add New Item</h2>
+        <h2 className="font-display text-2xl text-gray-900">Add New Item</h2>
         <p className="text-gray-500 text-sm mt-1">
           Items saved here appear in the typeahead search when building quotations.
         </p>
@@ -84,18 +84,18 @@ export default function AddItem({ onAdded }) {
 
           {/* Preview chip */}
           {form.name && (
-            <div className="flex items-center gap-3 bg-ink-800 border border-gold-400/20 rounded-lg px-4 py-3">
-              <div className="w-8 h-8 bg-gold-400/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Tag className="w-4 h-4 text-gold-400" />
+            <div className="flex items-center gap-3 bg-gold-50 border border-gold-200 rounded-lg px-4 py-3">
+              <div className="w-8 h-8 bg-gold-400/15 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Tag className="w-4 h-4 text-gold-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-200 truncate">{form.name}</p>
+                <p className="text-sm font-medium text-gray-800 truncate">{form.name}</p>
                 {form.description && (
                   <p className="text-xs text-gray-500 truncate">{form.description}</p>
                 )}
               </div>
               {form.rate && (
-                <span className="text-gold-300 font-mono text-sm font-semibold ml-auto">
+                <span className="text-gold-500 font-mono text-sm font-semibold ml-auto">
                   ₹{parseFloat(form.rate).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               )}

@@ -56,7 +56,7 @@ export default function ViewItems() {
       <div className="flex items-start justify-between mb-8">
         <div>
           <p className="section-label">Item Catalogue</p>
-          <h2 className="font-display text-2xl text-white">Product & Service Library</h2>
+          <h2 className="font-display text-2xl text-gray-900">Product & Service Library</h2>
           <p className="text-gray-500 text-sm mt-1">{items.length} item{items.length !== 1 ? 's' : ''} in catalogue</p>
         </div>
         <button onClick={load} className="btn-ghost flex items-center gap-2 !py-2">
@@ -96,9 +96,9 @@ export default function ViewItems() {
         <div className="card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-ink-800 border-b border-ink-600">
+              <tr className="bg-gold-50 border-b border-ink-700">
                 {['Item Name', 'Description', 'HSN/SAC', 'Category', 'Rate (₹)', ''].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-400 tracking-wider uppercase">
+                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gold-600 tracking-wider uppercase">
                     {h}
                   </th>
                 ))}
@@ -109,8 +109,8 @@ export default function ViewItems() {
                 <tr
                   key={item.id}
                   className={`border-b border-ink-700/60 transition-colors
-                    ${i % 2 === 0 ? 'bg-ink-900' : 'bg-ink-800/30'}
-                    hover:bg-ink-700/40`}
+                    ${i % 2 === 0 ? 'bg-white' : 'bg-ink-800/40'}
+                    hover:bg-gold-50`}
                 >
                   {editId === item.id ? (
                     // Edit row
@@ -152,34 +152,34 @@ export default function ViewItems() {
                     // Read row
                     <>
                       <td className="px-4 py-3">
-                        <span className="text-gray-200 font-medium">{item.name}</span>
+                        <span className="text-gray-800 font-medium">{item.name}</span>
                       </td>
                       <td className="px-4 py-3 max-w-[200px]">
                         <span className="text-gray-500 text-xs truncate block">{item.description || '—'}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-mono text-xs text-gray-400">{item.hsn_code || '—'}</span>
+                        <span className="font-mono text-xs text-gray-500">{item.hsn_code || '—'}</span>
                       </td>
                       <td className="px-4 py-3">
                         {item.category ? (
-                          <span className="bg-ink-700 text-gray-400 text-xs px-2 py-0.5 rounded-full">
+                          <span className="bg-gold-100 text-gold-600 text-xs px-2 py-0.5 rounded-full font-medium">
                             {item.category}
                           </span>
-                        ) : <span className="text-gray-700">—</span>}
+                        ) : <span className="text-gray-400">—</span>}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-gold-300 font-mono font-semibold">
+                        <span className="text-gold-500 font-mono font-semibold">
                           ₹{item.rate.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
                           <button onClick={() => startEdit(item)}
-                            className="p-1.5 text-gray-600 hover:text-gold-400 hover:bg-gold-400/10 rounded-md transition-colors">
+                            className="p-1.5 text-gray-400 hover:text-gold-500 hover:bg-gold-50 rounded-md transition-colors">
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button onClick={() => deleteItem(item.id, item.name)}
-                            className="p-1.5 text-gray-600 hover:text-red-400 hover:bg-red-400/10 rounded-md transition-colors">
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>

@@ -46,7 +46,7 @@ export default function Auth({ onAuth }) {
       {/* Background accent */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px]
-                        bg-gold-400/5 rounded-full blur-[120px]" />
+                        bg-gold-400/8 rounded-full blur-[120px]" />
       </div>
 
       <div className="w-full max-w-md fade-in relative z-10">
@@ -63,7 +63,7 @@ export default function Auth({ onAuth }) {
               SHREYA SYSTEMS
             </span>
           </div>
-          <h1 className="font-display text-3xl text-white mb-1">
+          <h1 className="font-display text-3xl text-gray-900 mb-1">
             {mode === 'login' ? 'Welcome back' : 'Create account'}
           </h1>
           <p className="text-gray-500 text-sm">
