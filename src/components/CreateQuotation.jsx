@@ -158,11 +158,22 @@ export default function CreateQuotation({ onSaved }) {
 
   const removeLine = (id) => setLines(l => l.filter(x => x.id !== id))
 
-  // Totals
+  // Totals — logic depends on inclusive/exclusive mode
   const subtotal = lines.reduce((s, l) => s + l.amount, 0)
-  const cgst = subtotal * CGST_RATE
-  const sgst = subtotal * SGST_RATE
-  const grandTotal = subtotal + cgst + sgst
+  let cgst, sgst, grandTotal, displaySubtotal
+  if (taxInclusive === 'inclusive') {
+    // Tax is already included in the prices — back-calculate
+    grandTotal = subtotal
+    cgst = grandTotal * CGST_RATE / (1 + CGST_RATE + SGST_RATE)
+    sgst = grandTotal * SGST_RATE / (1 + CGST_RATE + SGST_RATE)
+    displaySubtotal = grandTotal - cgst - sgst
+  } else {
+    // Tax is added on top
+    displaySubtotal = subtotal
+    cgst = subtotal * CGST_RATE
+    sgst = subtotal * SGST_RATE
+    grandTotal = subtotal + cgst + sgst
+  }
 
   // PDF data (includes editable terms)
   const quoteData = {
@@ -172,11 +183,14 @@ export default function CreateQuotation({ onSaved }) {
     notes,
     tax_inclusive: taxInclusive,
     items: lines,
-    total_amount: subtotal,
+    total_amount: displaySubtotal,
     cgst_amount: cgst,
     sgst_amount: sgst,
     grand_total: grandTotal,
-    terms,
+    terms: {
+      ...terms,
+      Taxes: taxInclusive === 'inclusive' ? 'GST Inclusive' : 'GST Exclusive',
+    },
   }
 
   const saveQuotation = async () => {
@@ -398,7 +412,7 @@ export default function CreateQuotation({ onSaved }) {
                 {/* Totals strip */}
                 <div className="bg-ink-800 border-t border-ink-600 px-4 py-3 space-y-1">
                   {[
-                    ['Subtotal', subtotal],
+                    ['Subtotal', displaySubtotal],
                     ['CGST 9%', cgst],
                     ['SGST 9%', sgst],
                   ].map(([label, val]) => (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FileText, Trash2, RefreshCw, Download, Eye, Calendar, User } from 'lucide-react'
+import { FileText, Trash2, RefreshCw, Download, Eye, Calendar, User, Search } from 'lucide-react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import toast from 'react-hot-toast'
 import api from '../api'
@@ -16,6 +16,7 @@ export default function QuoteHistory() {
   const [quotes, setQuotes] = useState([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const load = async () => {
     setLoading(true)
@@ -44,14 +45,23 @@ export default function QuoteHistory() {
 
   const fmt = (n) => '₹' + (Number(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
 
+  const filteredQuotes = quotes.filter(q => {
+    if (!searchQuery.trim()) return true
+    const q_ = searchQuery.toLowerCase()
+    return (
+      q.quote_number?.toLowerCase().includes(q_) ||
+      q.client_name?.toLowerCase().includes(q_)
+    )
+  })
+
   return (
     <div className="max-w-5xl mx-auto fade-in">
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex items-start justify-between mb-6">
         <div>
           <p className="section-label">History</p>
           <h2 className="font-display text-2xl text-white">Quotation Archive</h2>
           <p className="text-gray-500 text-sm mt-1">
-            {quotes.length} quotation{quotes.length !== 1 ? 's' : ''} generated
+            {filteredQuotes.length} of {quotes.length} quotation{quotes.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button onClick={load} className="btn-ghost flex items-center gap-2 !py-2">
@@ -59,10 +69,35 @@ export default function QuoteHistory() {
         </button>
       </div>
 
+      {/* Search bar */}
+      <div className="relative mb-5">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+        <input
+          className="input-field pl-10"
+          placeholder="Search by client name or quotation number…"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <button
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors text-xs"
+            onClick={() => setSearchQuery('')}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
       {loading ? (
         <div className="card p-12 flex items-center justify-center gap-3 text-gray-600">
           <RefreshCw className="w-4 h-4 animate-spin" />
           <span className="text-sm">Loading quotations…</span>
+        </div>
+      ) : filteredQuotes.length === 0 && searchQuery ? (
+        <div className="card p-12 flex flex-col items-center justify-center text-center gap-3">
+          <Search className="w-10 h-10 text-gray-700" />
+          <p className="text-gray-500 text-sm">No quotations match <span className="text-gold-400 font-mono">"{searchQuery}"</span></p>
+          <button onClick={() => setSearchQuery('')} className="btn-ghost !py-1.5 !px-4 text-xs">Clear Search</button>
         </div>
       ) : quotes.length === 0 ? (
         <div className="card p-12 flex flex-col items-center justify-center text-center gap-3">
@@ -71,7 +106,7 @@ export default function QuoteHistory() {
         </div>
       ) : (
         <div className="space-y-3">
-          {quotes.map((q) => (
+          {filteredQuotes.map((q) => (
             <div key={q.id} className="card overflow-hidden">
               {/* Header row */}
               <div className="flex items-center justify-between px-5 py-4">

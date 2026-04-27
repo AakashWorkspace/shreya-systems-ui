@@ -51,27 +51,27 @@ const s = StyleSheet.create({
   },
 
   headerBand: {
-    backgroundColor: '#fff8e8',
+    backgroundColor: '#4a86e8',
     paddingHorizontal: 28,
     paddingTop: 14,
     paddingBottom: 10,
   },
   headerRow:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  companyName:   { fontSize: 18, fontWeight: 700, color: '#000a52', letterSpacing: 1.5, marginBottom: 2 },
-  companyTagline:{ fontSize: 7, color: '#000000', letterSpacing: 0.8 },
-  companyMeta:   { fontSize: 7, color: '#000000', lineHeight: 1.5, marginTop: 4 },
-  quoteTitle:    { fontSize: 20, fontWeight: 700, color: '#000000', letterSpacing: 2.5, textAlign: 'right' },
-  quoteMeta:     { fontSize: 7.5, color: '#000000', textAlign: 'right', marginTop: 3, lineHeight: 1.6 },
-  quoteNumber:   { fontSize: 8.5, color: '#000a52', textAlign: 'right', fontWeight: 700 },
+  companyName:   { fontSize: 19.5, fontWeight: 700, color: '#000a52', letterSpacing: 1.5, marginBottom: 2 },
+  companyTagline:{ fontSize: 8.5, color: '#000000', letterSpacing: 0.8 },
+  companyMeta:   { fontSize: 8.5, color: '#000000', lineHeight: 1.5, marginTop: 4 },
+  quoteTitle:    { fontSize: 21.5, fontWeight: 700, color: '#000000', letterSpacing: 2.5, textAlign: 'right' },
+  quoteMeta:     { fontSize: 9, color: '#000000', textAlign: 'right', marginTop: 3, lineHeight: 1.6 },
+  quoteNumber:   { fontSize: 10, color: '#000000', textAlign: 'right', fontWeight: 700 },
 
   goldDivider:   { height: 3, backgroundColor: C.gold },
   thinDivider:   { height: 1, backgroundColor: '#e8e0c8', marginHorizontal: 28 },
 
   partiesRow:    { flexDirection: 'row', paddingHorizontal: 28, paddingVertical: 10, gap: 20 },
   partyBox:      { flex: 1 },
-  partyLabel:    { fontSize: 6.5, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 4, textTransform: 'uppercase' },
-  partyName:     { fontSize: 9, fontWeight: 700, color: '#111122', marginBottom: 2 },
-  partyMeta:     { fontSize: 7, color: '#555566', lineHeight: 1.55 },
+  partyLabel:    { fontSize: 8, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 4, textTransform: 'uppercase' },
+  partyName:     { fontSize: 10.5, fontWeight: 700, color: '#111122', marginBottom: 2 },
+  partyMeta:     { fontSize: 8.5, color: '#555566', lineHeight: 1.55 },
 
   // ── MIDDLE 50%: items table ───────────────────────────────────────────────
   middleBlock: {
@@ -85,28 +85,28 @@ const s = StyleSheet.create({
 
   tableHead: {
     flexDirection: 'row',
-    backgroundColor: C.ink,
+    backgroundColor: '#6d9eeb',
     paddingVertical: 7,
     paddingHorizontal: 8,
     borderRadius: 3,
   },
-  thSn:   { width: 22,  fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4 },
-  thDesc: { flex: 1,    fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4 },
-  thHsn:  { width: 52,  fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4, textAlign: 'center' },
-  thQty:  { width: 26,  fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4, textAlign: 'center' },
-  thRate: { width: 60,  fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4, textAlign: 'right' },
-  thAmt:  { width: 68,  fontSize: 7, fontWeight: 700, color: C.goldLight, letterSpacing: 0.4, textAlign: 'right' },
+  thSn:   { width: 22,  fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4 },
+  thDesc: { flex: 1,    fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4 },
+  thHsn:  { width: 52,  fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4, textAlign: 'center' },
+  thQty:  { width: 26,  fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4, textAlign: 'center' },
+  thRate: { width: 60,  fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4, textAlign: 'right' },
+  thAmt:  { width: 68,  fontSize: 8.5, fontWeight: 700, color: '#000000', letterSpacing: 0.4, textAlign: 'right' },
 
   rowEven: { flexDirection: 'row', paddingVertical: 5.5, paddingHorizontal: 8, backgroundColor: C.row1, borderBottomWidth: 1, borderBottomColor: '#ece8d8' },
   rowOdd:  { flexDirection: 'row', paddingVertical: 5.5, paddingHorizontal: 8, backgroundColor: C.row2, borderBottomWidth: 1, borderBottomColor: '#ece8d8' },
-  tdSn:       { width: 22,  fontSize: 7.5, color: '#888' },
+  tdSn:       { width: 22,  fontSize: 9, color: '#888' },
   tdDesc:     { flex: 1 },
-  tdDescName: { fontSize: 8, fontWeight: 700, color: '#111122', marginBottom: 1 },
-  tdDescSub:  { fontSize: 6.5, color: '#666677', lineHeight: 1.4 },
-  tdHsn:  { width: 52,  fontSize: 7,   color: '#666677', textAlign: 'center' },
-  tdQty:  { width: 26,  fontSize: 8,   textAlign: 'center', fontWeight: 700 },
-  tdRate: { width: 60,  fontSize: 8,   textAlign: 'right',  color: '#333' },
-  tdAmt:  { width: 68,  fontSize: 8,   textAlign: 'right',  fontWeight: 700, color: '#111122' },
+  tdDescName: { fontSize: 9.5, fontWeight: 700, color: '#111122', marginBottom: 1 },
+  tdDescSub:  { fontSize: 8, color: '#666677', lineHeight: 1.4 },
+  tdHsn:  { width: 52,  fontSize: 8.5, color: '#666677', textAlign: 'center' },
+  tdQty:  { width: 26,  fontSize: 9.5, textAlign: 'center', fontWeight: 700 },
+  tdRate: { width: 60,  fontSize: 9.5, textAlign: 'right',  color: '#333' },
+  tdAmt:  { width: 68,  fontSize: 9.5, textAlign: 'right',  fontWeight: 700, color: '#111122' },
 
   // ── BOTTOM 25%: totals + terms + signature + footer ──────────────────────
   bottomBlock: {
@@ -135,38 +135,38 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  totalLabel: { fontSize: 8, color: '#555' },
-  totalValue: { fontSize: 8, color: '#333', fontWeight: 700 },
+  totalLabel: { fontSize: 9.5, color: '#555' },
+  totalValue: { fontSize: 9.5, color: '#333', fontWeight: 700 },
   grandRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 5,
     paddingHorizontal: 8,
-    backgroundColor: C.ink,
+    backgroundColor: '#6d9eeb',
     borderRadius: 3,
     marginTop: 3,
   },
-  grandLabel: { fontSize: 9,   fontWeight: 700, color: C.goldLight, letterSpacing: 0.8 },
-  grandValue: { fontSize: 10,  fontWeight: 700, color: C.white },
+  grandLabel: { fontSize: 10.5, fontWeight: 700, color: '#000000', letterSpacing: 0.8 },
+  grandValue: { fontSize: 11.5, fontWeight: 700, color: '#000000' },
 
   // Terms (fills remaining width)
   termsBox: { flex: 1 },
-  termsTitle: { fontSize: 6.5, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 5 },
+  termsTitle: { fontSize: 8, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 5 },
   termsGrid2col: { flexDirection: 'row', gap: 5 },
   termsCol: { flex: 1, gap: 4 },
   termChip: {
-    backgroundColor: '#f4f0e8',
+    backgroundColor: '#a4c2f4',
     borderRadius: 3,
     paddingHorizontal: 6,
     paddingVertical: 4,
     borderLeftWidth: 2,
-    borderLeftColor: C.gold,
+    borderLeftColor: '#4a86e8',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  termLabel: { fontSize: 6,   fontWeight: 700, color: '#555', width: 48 },
-  termValue: { fontSize: 6.5, color: '#222', flex: 1 },
+  termLabel: { fontSize: 7.5, fontWeight: 700, color: '#333', width: 48 },
+  termValue: { fontSize: 8,   color: '#111', flex: 1 },
 
   // Signature row
   sigRow: {
@@ -177,13 +177,13 @@ const s = StyleSheet.create({
     marginTop: 6,
   },
   thankBlock: { alignItems: 'flex-start' },
-  thankText:  { fontSize: 7.5, color: '#888', fontStyle: 'italic' },
+  thankText:  { fontSize: 9, color: '#888', fontStyle: 'italic' },
 
   sigBlock:  { alignItems: 'flex-end' },
   stampImg:  { width: 58, height: 58, marginBottom: 4 },
   sigLine:   { width: 110, borderBottomWidth: 1.5, borderBottomColor: C.ink, marginBottom: 3 },
-  sigLabel:  { fontSize: 7,   color: '#888' },
-  sigName:   { fontSize: 8,   fontWeight: 700, color: '#222', marginTop: 1 },
+  sigLabel:  { fontSize: 8.5, color: '#888' },
+  sigName:   { fontSize: 9.5, fontWeight: 700, color: '#222', marginTop: 1 },
 
   // Footer band
   footerBand: {
@@ -195,8 +195,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
     marginTop: 6,
   },
-  footerLeft:  { fontSize: 6.5, color: '#8888aa' },
-  footerRight: { fontSize: 6.5, color: C.gold },
+  footerLeft:  { fontSize: 8, color: '#8888aa' },
+  footerRight: { fontSize: 8, color: C.gold },
 })
 
 export default function QuotePDF({ quote }) {
