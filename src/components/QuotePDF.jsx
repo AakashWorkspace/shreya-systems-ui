@@ -40,7 +40,7 @@ const s = StyleSheet.create({
     fontFamily: 'Helvetica',
     backgroundColor: C.white,
     fontSize: 9,
-    color: '#1a1a2e',
+    color: '#000000',
     // No padding on page itself — we control it per-section
   },
 
@@ -69,9 +69,9 @@ const s = StyleSheet.create({
 
   partiesRow:    { flexDirection: 'row', paddingHorizontal: 28, paddingVertical: 10, gap: 20 },
   partyBox:      { flex: 1 },
-  partyLabel:    { fontSize: 8, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 4, textTransform: 'uppercase' },
-  partyName:     { fontSize: 10.5, fontWeight: 700, color: '#111122', marginBottom: 2 },
-  partyMeta:     { fontSize: 8.5, color: '#555566', lineHeight: 1.55 },
+  partyLabel:    { fontSize: 8, fontWeight: 700, color: '#000000', letterSpacing: 1.2, marginBottom: 4, textTransform: 'uppercase' },
+  partyName:     { fontSize: 10.5, fontWeight: 700, color: '#000000', marginBottom: 2 },
+  partyMeta:     { fontSize: 8.5, color: '#000000', lineHeight: 1.55 },
 
   // ── MIDDLE 50%: items table ───────────────────────────────────────────────
   middleBlock: {
@@ -99,14 +99,14 @@ const s = StyleSheet.create({
 
   rowEven: { flexDirection: 'row', paddingVertical: 5.5, paddingHorizontal: 8, backgroundColor: C.row1, borderBottomWidth: 1, borderBottomColor: '#ece8d8' },
   rowOdd:  { flexDirection: 'row', paddingVertical: 5.5, paddingHorizontal: 8, backgroundColor: C.row2, borderBottomWidth: 1, borderBottomColor: '#ece8d8' },
-  tdSn:       { width: 22,  fontSize: 9, color: '#888' },
+  tdSn:       { width: 22,  fontSize: 9, color: '#000000' },
   tdDesc:     { flex: 1 },
-  tdDescName: { fontSize: 9.5, fontWeight: 700, color: '#111122', marginBottom: 1 },
-  tdDescSub:  { fontSize: 8, color: '#666677', lineHeight: 1.4 },
-  tdHsn:  { width: 52,  fontSize: 8.5, color: '#666677', textAlign: 'center' },
+  tdDescName: { fontSize: 9.5, fontWeight: 700, color: '#000000', marginBottom: 1 },
+  tdDescSub:  { fontSize: 8, color: '#000000', lineHeight: 1.4 },
+  tdHsn:  { width: 52,  fontSize: 8.5, color: '#000000', textAlign: 'center' },
   tdQty:  { width: 26,  fontSize: 9.5, textAlign: 'center', fontWeight: 700 },
-  tdRate: { width: 60,  fontSize: 9.5, textAlign: 'right',  color: '#333' },
-  tdAmt:  { width: 68,  fontSize: 9.5, textAlign: 'right',  fontWeight: 700, color: '#111122' },
+  tdRate: { width: 60,  fontSize: 9.5, textAlign: 'right',  color: '#000000' },
+  tdAmt:  { width: 68,  fontSize: 9.5, textAlign: 'right',  fontWeight: 700, color: '#000000' },
 
   // ── BOTTOM 25%: totals + terms + signature + footer ──────────────────────
   bottomBlock: {
@@ -135,8 +135,8 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  totalLabel: { fontSize: 9.5, color: '#555' },
-  totalValue: { fontSize: 9.5, color: '#333', fontWeight: 700 },
+  totalLabel: { fontSize: 9.5, color: '#000000' },
+  totalValue: { fontSize: 9.5, color: '#000000', fontWeight: 700 },
   grandRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -151,7 +151,7 @@ const s = StyleSheet.create({
 
   // Terms (fills remaining width)
   termsBox: { flex: 1 },
-  termsTitle: { fontSize: 8, fontWeight: 700, color: C.gold, letterSpacing: 1.2, marginBottom: 5 },
+  termsTitle: { fontSize: 8, fontWeight: 700, color: '#000000', letterSpacing: 1.2, marginBottom: 5 },
   termsGrid2col: { flexDirection: 'row', gap: 5 },
   termsCol: { flex: 1, gap: 4 },
   termChip: {
@@ -165,8 +165,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  termLabel: { fontSize: 7.5, fontWeight: 700, color: '#333', width: 48 },
-  termValue: { fontSize: 8,   color: '#111', flex: 1 },
+  termLabel: { fontSize: 7.5, fontWeight: 700, color: '#000000', width: 48 },
+  termValue: { fontSize: 8,   color: '#000000', flex: 1 },
 
   // Signature row
   sigRow: {
@@ -177,13 +177,13 @@ const s = StyleSheet.create({
     marginTop: 6,
   },
   thankBlock: { alignItems: 'flex-start' },
-  thankText:  { fontSize: 9, color: '#888', fontStyle: 'italic' },
+  thankText:  { fontSize: 9, color: '#000000', fontStyle: 'italic' },
 
   sigBlock:  { alignItems: 'flex-end' },
   stampImg:  { width: 58, height: 58, marginBottom: 4 },
   sigLine:   { width: 110, borderBottomWidth: 1.5, borderBottomColor: C.ink, marginBottom: 3 },
-  sigLabel:  { fontSize: 8.5, color: '#888' },
-  sigName:   { fontSize: 9.5, fontWeight: 700, color: '#222', marginTop: 1 },
+  sigLabel:  { fontSize: 8.5, color: '#000000' },
+  sigName:   { fontSize: 9.5, fontWeight: 700, color: '#000000', marginTop: 1 },
 
   // Footer band
   footerBand: {
@@ -195,8 +195,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
     marginTop: 6,
   },
-  footerLeft:  { fontSize: 8, color: '#8888aa' },
-  footerRight: { fontSize: 8, color: C.gold },
+  footerLeft:  { fontSize: 8, color: '#000000' },
+  footerRight: { fontSize: 8, color: '#000000' },
 })
 
 export default function QuotePDF({ quote }) {
@@ -305,7 +305,7 @@ export default function QuotePDF({ quote }) {
           {/* Rows */}
           {items.length === 0 && (
             <View style={s.rowEven}>
-              <Text style={[s.tdDesc, { color: '#aaa', fontStyle: 'italic' }]}>
+              <Text style={[s.tdDesc, { color: '#000000', fontStyle: 'italic' }]}>
                 No items added yet
               </Text>
             </View>
