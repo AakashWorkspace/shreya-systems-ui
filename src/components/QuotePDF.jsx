@@ -3,6 +3,7 @@ import {
   Document, Page, Text, View, StyleSheet, Font, Image,
 } from '@react-pdf/renderer'
 import stampImage from '../images/signature.jpeg'
+import logoImage  from '../images/logo.png'
 
 // ─── Colour palette ────────────────────────────────────────────────────────
 const C = {
@@ -51,7 +52,7 @@ const s = StyleSheet.create({
   },
 
   headerBand: {
-    backgroundColor: '#4a86e8',
+    backgroundColor: '#A4C2F4',
     paddingHorizontal: 28,
     paddingTop: 14,
     paddingBottom: 10,
@@ -237,9 +238,12 @@ export default function QuotePDF({ quote }) {
           {/* Header band */}
           <View style={s.headerBand}>
             <View style={s.headerRow}>
-              <View>
-                <Text style={s.companyName}>SHREYA SYSTEMS</Text>
-                <Text style={s.companyTagline}>TECHNOLOGY SOLUTIONS &amp; SUPPLY</Text>
+              {/* Company logo — replaces name + tagline */}
+              <View style={{ justifyContent: 'center' }}>
+                <Image
+                  src={logoImage}
+                  style={{ width: 130, height: 52, objectFit: 'contain' }}
+                />
                 <Text style={s.companyMeta}>
                   Shop No. 04, Janaki Corner, 1007/1009 Sadashiv Peth, Pune{'\n'}
                   Cell: 9422015713 / 7798470513{'\n'}
@@ -258,21 +262,8 @@ export default function QuotePDF({ quote }) {
           {/* Gold divider */}
           <View style={s.goldDivider} />
 
-          {/* Parties */}
-          <View style={s.partiesRow}>
-            <View style={s.partyBox}>
-              <Text style={s.partyLabel}>Bill From</Text>
-              <Text style={s.partyName}>Shreya Systems</Text>
-              <Text style={s.partyMeta}>
-                Shop No. 04, Janaki Corner{'\n'}
-                1007/1009 Sadashiv Peth, Pune – 411 030{'\n'}
-                Maharashtra, India{'\n'}
-                GSTIN: 27AFFPG6521C1ZW
-              </Text>
-            </View>
-
-            <View style={{ width: 1, backgroundColor: '#ddd' }} />
-
+          {/* Bill To — full width, no Bill From */}
+          <View style={[s.partiesRow, { paddingVertical: 8 }]}>
             <View style={s.partyBox}>
               <Text style={s.partyLabel}>Bill To</Text>
               <Text style={s.partyName}>{client_name || '—'}</Text>
