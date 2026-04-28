@@ -438,7 +438,7 @@ export default function CreateQuotation({ onSaved }) {
                 <div key={key} className="card p-2.5 flex items-center gap-2">
                   <span className="text-xs text-gold-400 font-semibold w-20 shrink-0">{key}</span>
                   <input
-                    className="flex-1 bg-transparent border-b border-ink-600 focus:border-gold-400 outline-none text-xs text-gray-200 py-0.5 transition-colors"
+                    className="flex-1 bg-transparent border-b border-ink-600 focus:border-gold-400 outline-none text-xs text-gray-700 py-0.5 transition-colors"
                     value={terms[key]}
                     onChange={e => updateTerm(key, e.target.value)}
                   />

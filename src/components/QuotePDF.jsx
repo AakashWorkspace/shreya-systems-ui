@@ -331,7 +331,7 @@ export default function QuotePDF({ quote }) {
                 <View style={s.termsCol}>
                   {col1.map(([label, value]) => (
                     <View key={label} style={s.termChip}>
-                      <Text style={s.termLabel}>{label.toUpperCase()}</Text>
+                      <Text style={s.termLabel}>{label} - </Text>
                       <Text style={s.termValue}>{value}</Text>
                     </View>
                   ))}
@@ -339,7 +339,7 @@ export default function QuotePDF({ quote }) {
                 <View style={s.termsCol}>
                   {col2.map(([label, value]) => (
                     <View key={label} style={s.termChip}>
-                      <Text style={s.termLabel}>{label.toUpperCase()}</Text>
+                      <Text style={s.termLabel}>{label} - </Text>
                       <Text style={s.termValue}>{value}</Text>
                     </View>
                   ))}
