@@ -209,13 +209,14 @@ export default function QuotePDF({ quote }) {
   } = quote
 
   // Default terms (can be overridden by quote.terms)
+  const safeTerms = terms || {}
   const T = {
-    Taxes:     terms.Taxes     ?? (tax_inclusive === 'inclusive' ? 'GST Inclusive' : 'GST Exclusive'),
-    Payment:   terms.Payment   ?? '100% Advance',
-    Delivery:  terms.Delivery  ?? '3-4 Business Days',
-    Scope:     terms.Scope     ?? 'Supply Only',
-    Documents: terms.Documents ?? 'Tax Invoice',
-    Validity:  terms.Validity  ?? '30 Days',
+    Taxes:     safeTerms.Taxes     ?? (tax_inclusive === 'inclusive' ? 'GST Inclusive' : 'GST Exclusive'),
+    Payment:   safeTerms.Payment   ?? '100% Advance',
+    Delivery:  safeTerms.Delivery  ?? '3-4 Business Days',
+    Scope:     safeTerms.Scope     ?? 'Supply Only',
+    Documents: safeTerms.Documents ?? 'Tax Invoice',
+    Validity:  safeTerms.Validity  ?? '30 Days',
   }
   const termPairs = Object.entries(T)  // 6 entries → split into 2 cols of 3
   const col1 = termPairs.slice(0, 3)
