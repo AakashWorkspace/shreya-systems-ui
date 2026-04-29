@@ -21,6 +21,7 @@ const DEFAULT_TERMS = {
 export default function CreateQuotation({ onSaved }) {
   const [quoteNumber, setQuoteNumber] = useState('')
   const [quoteNumLoading, setQuoteNumLoading] = useState(true)
+  const [quoteName, setQuoteName] = useState('')
 
   // Fetch next sequential quote number from backend on mount
   useEffect(() => {
@@ -178,6 +179,7 @@ export default function CreateQuotation({ onSaved }) {
   // PDF data (includes editable terms)
   const quoteData = {
     quote_number: quoteNumber,
+    quote_name: quoteName.trim() || undefined,
     date: new Date().toISOString(),
     ...client,
     notes,
@@ -239,6 +241,17 @@ export default function CreateQuotation({ onSaved }) {
               </button>
               <span>{taxInclusive === 'inclusive' ? 'Incl.' : 'Excl.'}</span>
             </div>
+          </div>
+
+          {/* Quotation Name */}
+          <div>
+            <p className="section-label">Quotation Name</p>
+            <input
+              className="input-field"
+              placeholder="e.g. Office Furniture Supply – ABC Corp (used as PDF filename)"
+              value={quoteName}
+              onChange={e => setQuoteName(e.target.value)}
+            />
           </div>
 
           {/* ── Client info with Bill To autocomplete ── */}
@@ -470,7 +483,7 @@ export default function CreateQuotation({ onSaved }) {
             {lines.length > 0 && (
               <PDFDownloadLink
                 document={<QuotePDF quote={quoteData} />}
-                fileName={`${quoteNumber.replace(/\//g, '-')}.pdf`}
+                fileName={`${(quoteName.trim() || quoteNumber).replace(/[\/\\:*?"<>|]/g, '-')}.pdf`}
               >
                 {({ loading }) => (
                   <button className="btn-ghost flex items-center gap-2 flex-1 justify-center">
