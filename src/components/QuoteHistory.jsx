@@ -68,6 +68,13 @@ function EditModal({ quote, onClose, onSaved }) {
 
   const removeLine = (id) => setLines(l => l.filter(x => x.id !== id))
 
+  const updateLine = (id, field, value) => setLines(l => l.map(x => {
+    if (x.id !== id) return x
+    const updated = { ...x, [field]: value }
+    updated.amount = (Number(updated.qty) || 1) * (Number(updated.rate) || 0)
+    return updated
+  }))
+
   const saveEdit = async () => {
     if (lines.length === 0) return toast.error('Add at least one item')
     setSaving(true)
@@ -183,22 +190,49 @@ function EditModal({ quote, onClose, onSaved }) {
                   <thead>
                     <tr className="bg-ink-800 text-gray-400">
                       <th className="text-left px-3 py-2 font-medium">Item</th>
-                      <th className="text-center px-2 py-2 font-medium w-10">Qty</th>
-                      <th className="text-right px-3 py-2 font-medium w-24">Rate</th>
-                      <th className="text-right px-3 py-2 font-medium w-24">Amount</th>
+                      <th className="text-center px-2 py-2 font-medium w-14">Qty</th>
+                      <th className="text-right px-2 py-2 font-medium w-28">Rate</th>
+                      <th className="text-right px-3 py-2 font-medium w-28">Amount</th>
                       <th className="w-8" />
                     </tr>
                   </thead>
                   <tbody>
                     {lines.map((line, i) => (
-                      <tr key={line.id} className={`border-t border-ink-700 ${i % 2 === 0 ? '' : 'bg-ink-800/20'}`}>
-                        <td className="px-3 py-2 text-gray-700 font-medium">{line.item_name}
-                          {line.description && <p className="text-gray-500 text-[10px]">{line.description}</p>}
+                      <tr key={line.id} className={`border-t border-ink-700 ${i % 2 === 0 ? '' : 'bg-gray-50'}`}>
+                        <td className="px-2 py-1.5">
+                          <input
+                            className="w-full bg-transparent border border-transparent hover:border-gray-300 focus:border-blue-400 rounded px-1.5 py-1 text-gray-800 font-medium outline-none transition-colors"
+                            value={line.item_name}
+                            onChange={e => updateLine(line.id, 'item_name', e.target.value)}
+                            placeholder="Item name"
+                          />
+                          <input
+                            className="w-full bg-transparent border border-transparent hover:border-gray-300 focus:border-blue-400 rounded px-1.5 py-0.5 text-gray-500 text-[10px] outline-none transition-colors mt-0.5"
+                            value={line.description || ''}
+                            onChange={e => updateLine(line.id, 'description', e.target.value)}
+                            placeholder="Description (optional)"
+                          />
                         </td>
-                        <td className="text-center px-2 py-2 text-gray-600">{line.qty}</td>
-                        <td className="text-right px-3 py-2 font-mono text-gray-600">{fmt(line.rate)}</td>
-                        <td className="text-right px-3 py-2 font-mono font-semibold text-gold-500">{fmt(line.amount ?? line.qty * line.rate)}</td>
-                        <td className="px-2 py-2">
+                        <td className="px-2 py-1.5">
+                          <input
+                            type="number" min="1"
+                            className="w-full bg-transparent border border-transparent hover:border-gray-300 focus:border-blue-400 rounded px-1.5 py-1 text-center text-gray-700 outline-none transition-colors"
+                            value={line.qty}
+                            onChange={e => updateLine(line.id, 'qty', parseInt(e.target.value) || 1)}
+                          />
+                        </td>
+                        <td className="px-2 py-1.5">
+                          <input
+                            type="number" min="0" step="0.01"
+                            className="w-full bg-transparent border border-transparent hover:border-gray-300 focus:border-blue-400 rounded px-1.5 py-1 text-right font-mono text-gray-700 outline-none transition-colors"
+                            value={line.rate}
+                            onChange={e => updateLine(line.id, 'rate', parseFloat(e.target.value) || 0)}
+                          />
+                        </td>
+                        <td className="text-right px-3 py-1.5 font-mono font-semibold text-gold-500 whitespace-nowrap">
+                          {fmt(line.amount ?? line.qty * line.rate)}
+                        </td>
+                        <td className="px-2 py-1.5">
                           <button onClick={() => removeLine(line.id)} className="text-gray-400 hover:text-red-400 transition-colors">
                             <X className="w-3.5 h-3.5" />
                           </button>
