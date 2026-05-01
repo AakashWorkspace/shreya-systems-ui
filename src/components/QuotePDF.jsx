@@ -33,7 +33,7 @@ const fmt = (n) => {
 //   bottom section (totals → footer): ~25%  ≈ 211 pt  ← absolute, pinned to bottom
 const PAGE_H = 842
 const PAGE_W = 595
-const BOTTOM_H = 230   // height reserved at bottom (absolute block)
+const BOTTOM_H = 206   // height reserved at bottom (absolute block)
 const TOP_H    = Math.floor(PAGE_H * 0.25)  // 210
 
 const s = StyleSheet.create({
@@ -173,20 +173,20 @@ const s = StyleSheet.create({
   notesRow: {
     paddingHorizontal: 28,
     marginTop: 7,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   notesLabel: {
     fontSize: 8,
     fontWeight: 700,
     color: '#000000',
     letterSpacing: 1.2,
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 3,
   },
   notesText: {
     fontSize: 8.5,
     color: '#000000',
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: 1.5,
     fontStyle: 'italic',
   },
