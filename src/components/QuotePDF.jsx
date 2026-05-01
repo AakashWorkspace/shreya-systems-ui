@@ -33,7 +33,7 @@ const fmt = (n) => {
 //   bottom section (totals → footer): ~25%  ≈ 211 pt  ← absolute, pinned to bottom
 const PAGE_H = 842
 const PAGE_W = 595
-const BOTTOM_H = 206   // height reserved at bottom (absolute block)
+const BOTTOM_H = 230   // height reserved at bottom (absolute block)
 const TOP_H    = Math.floor(PAGE_H * 0.25)  // 210
 
 const s = StyleSheet.create({
@@ -169,6 +169,28 @@ const s = StyleSheet.create({
   termLabel: { fontSize: 7.5, fontWeight: 700, color: '#000000', width: 48 },
   termValue: { fontSize: 8,   color: '#000000', flex: 1 },
 
+  // Notes / Remarks
+  notesRow: {
+    paddingHorizontal: 28,
+    marginTop: 7,
+    alignItems: 'center',
+  },
+  notesLabel: {
+    fontSize: 8,
+    fontWeight: 700,
+    color: '#000000',
+    letterSpacing: 1.2,
+    textAlign: 'center',
+    marginBottom: 3,
+  },
+  notesText: {
+    fontSize: 8.5,
+    color: '#000000',
+    textAlign: 'center',
+    lineHeight: 1.5,
+    fontStyle: 'italic',
+  },
+
   // Signature row
   sigRow: {
     flexDirection: 'row',
@@ -206,6 +228,7 @@ export default function QuotePDF({ quote }) {
     client_phone, client_email, items = [], tax_inclusive,
     total_amount, cgst_amount, sgst_amount, grand_total,
     terms = {},   // editable terms passed from parent
+    notes,        // optional notes / remarks
   } = quote
 
   // Default terms (can be overridden by quote.terms)
@@ -368,6 +391,14 @@ export default function QuotePDF({ quote }) {
               </View>
             </View>
           </View>
+
+          {/* Notes / Remarks — shown only when present, centred between T&C and thank-you */}
+          {notes && notes.trim() ? (
+            <View style={s.notesRow}>
+              <Text style={s.notesLabel}>NOTES / REMARKS</Text>
+              <Text style={s.notesText}>{notes.trim()}</Text>
+            </View>
+          ) : null}
 
           {/* Signature row */}
           <View style={s.sigRow}>
