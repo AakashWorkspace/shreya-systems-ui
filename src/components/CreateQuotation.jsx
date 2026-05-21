@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
-import { Search, Plus, Trash2, Download, Save, User } from 'lucide-react'
+import { Search, Plus, Trash2, Download, Save, User, AlertCircle, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../api'
 import QuotePDF from './QuotePDF'
+
+const DRAFT_KEY = 'ss_quote_draft'
 
 const CGST_RATE = 0.09
 const SGST_RATE = 0.09
@@ -19,9 +21,15 @@ const DEFAULT_TERMS = {
 }
 
 export default function CreateQuotation({ onSaved }) {
+  // ── Draft restore — load saved draft from localStorage ───────────────────
+  const savedDraft = (() => {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY)) } catch { return null }
+  })()
+  const [draftRestored, setDraftRestored] = useState(!!savedDraft)
+
   const [quoteNumber, setQuoteNumber] = useState('')
   const [quoteNumLoading, setQuoteNumLoading] = useState(true)
-  const [quoteName, setQuoteName] = useState('')
+  const [quoteName, setQuoteName] = useState(savedDraft?.quoteName ?? '')
 
   // Fetch next sequential quote number from backend on mount
   useEffect(() => {
@@ -38,7 +46,7 @@ export default function CreateQuotation({ onSaved }) {
       .finally(() => setQuoteNumLoading(false))
   }, [])
 
-  const [client, setClient] = useState({
+  const [client, setClient] = useState(savedDraft?.client ?? {
     client_name: '', client_address: '', client_gstin: '',
     client_phone: '', client_email: '',
   })
@@ -100,11 +108,11 @@ export default function CreateQuotation({ onSaved }) {
     setShowClientSug(false)
   }
 
-  const [notes, setNotes] = useState('')
-  const [taxInclusive, setTaxInclusive] = useState('exclusive')
+  const [notes, setNotes] = useState(savedDraft?.notes ?? '')
+  const [taxInclusive, setTaxInclusive] = useState(savedDraft?.taxInclusive ?? 'exclusive')
 
   // ── Editable Terms ──────────────────────────────────────────────────────
-  const [terms, setTerms] = useState({ ...DEFAULT_TERMS })
+  const [terms, setTerms] = useState(savedDraft?.terms ?? { ...DEFAULT_TERMS })
   const updateTerm = (key, val) => setTerms(t => ({ ...t, [key]: val }))
 
   // Line item form
@@ -116,8 +124,26 @@ export default function CreateQuotation({ onSaved }) {
   })
 
   // Quote lines
-  const [lines, setLines] = useState([])
+  const [lines, setLines] = useState(savedDraft?.lines ?? [])
   const [saving, setSaving] = useState(false)
+
+  // ── Auto-save draft to localStorage whenever key fields change ───────────
+  useEffect(() => {
+    const draft = { quoteName, client, notes, taxInclusive, terms, lines }
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+  }, [quoteName, client, notes, taxInclusive, terms, lines])
+
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_KEY)
+    setQuoteName('')
+    setClient({ client_name: '', client_address: '', client_gstin: '', client_phone: '', client_email: '' })
+    setNotes('')
+    setTaxInclusive('exclusive')
+    setTerms({ ...DEFAULT_TERMS })
+    setLines([])
+    setDraftRestored(false)
+    toast.success('Draft cleared')
+  }
 
   const sugRef = useRef(null)
 
@@ -205,6 +231,8 @@ export default function CreateQuotation({ onSaved }) {
         status: 'draft',
       }
       await api.post('/api/quotations', payload)
+      // Clear draft after successful save
+      localStorage.removeItem(DRAFT_KEY)
       toast.success('Quotation saved!')
       onSaved?.()
     } catch (err) {
@@ -221,6 +249,21 @@ export default function CreateQuotation({ onSaved }) {
       {/* ── LEFT PANEL ── */}
       <div className="w-[52%] flex flex-col overflow-y-auto border-r border-ink-700 bg-ink-900/60">
         <div className="p-6 space-y-5 flex-1">
+
+          {/* Draft restored banner */}
+          {draftRestored && (
+            <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-amber-50 border border-amber-300 rounded-lg text-xs">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+              <span className="text-amber-700 flex-1 font-medium">Draft restored — your previous progress has been kept.</span>
+              <button
+                onClick={clearDraft}
+                className="flex items-center gap-1 text-amber-600 hover:text-red-500 transition-colors font-semibold"
+                title="Clear draft and start fresh"
+              >
+                <X className="w-3 h-3" /> Clear
+              </button>
+            </div>
+          )}
 
           {/* Quote header */}
           <div className="flex items-center justify-between">

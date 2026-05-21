@@ -22,7 +22,6 @@ export default function App() {
   })
   const [active, setActive] = useState('create')
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [refreshKey, setRefreshKey] = useState(0)
 
   const logout = () => {
     localStorage.removeItem('ss_token')
@@ -161,8 +160,7 @@ export default function App() {
           {active === 'create' && (
             <div className="h-full">
               <CreateQuotation
-                key={refreshKey}
-                onSaved={() => { setRefreshKey(k => k + 1); setTimeout(() => setActive('history'), 800) }}
+                onSaved={() => { setTimeout(() => setActive('history'), 800) }}
               />
             </div>
           )}
