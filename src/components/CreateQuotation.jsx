@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { Search, Plus, Trash2, Download, Save, User, AlertCircle, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../api'
 import QuotePDF from './QuotePDF'
+import QuotePreview from './QuotePreview'
 
 const DRAFT_KEY = 'ss_quote_draft'
 
@@ -540,19 +541,17 @@ export default function CreateQuotation({ onSaved }) {
         </div>
       </div>
 
-      {/* ── RIGHT PANEL: LIVE PREVIEW ── */}
-      <div className="flex-1 flex flex-col bg-ink-950">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-ink-700">
-          <p className="text-xs text-gray-500 font-medium tracking-widest uppercase">Live PDF Preview</p>
+      {/* ── RIGHT PANEL: LIVE PREVIEW (HTML — zero flicker) ── */}
+      <div className="flex-1 flex flex-col bg-gray-200">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-ink-700 bg-white/80 backdrop-blur-sm">
+          <p className="text-xs text-gray-500 font-medium tracking-widest uppercase">Live Preview</p>
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-pulse" />
-            <span className="text-xs text-gray-500">Updates in real-time</span>
+            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+            <span className="text-xs text-gray-500">Instant · no flicker</span>
           </div>
         </div>
-        <div className="flex-1 overflow-hidden">
-          <PDFViewer width="100%" height="100%" showToolbar={false} className="border-0">
-            <QuotePDF quote={quoteData} />
-          </PDFViewer>
+        <div className="flex-1 overflow-auto">
+          <QuotePreview quote={quoteData} />
         </div>
       </div>
     </div>
