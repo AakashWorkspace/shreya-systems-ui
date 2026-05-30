@@ -1,9 +1,53 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { FileText, Trash2, RefreshCw, Download, Eye, Calendar, User, Search, Pencil, X, Plus, Save } from 'lucide-react'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import toast from 'react-hot-toast'
 import api from '../api'
 import QuotePDF from './QuotePDF'
+
+// ── Lazy PDF Download Button ───────────────────────────────────────────────────
+// Renders a plain button until clicked; only then initialises the PDF worker
+// for that specific quote. Prevents N workers running on Archive page load.
+function LazyPDFButton({ quote, fileName, className, title }) {
+  const [triggered, setTriggered] = useState(false)
+  const linkRef = useRef(null)
+
+  useEffect(() => {
+    // Once triggered and the link is rendered, auto-click it
+    if (triggered && linkRef.current) {
+      linkRef.current.click()
+    }
+  }, [triggered])
+
+  if (!triggered) {
+    return (
+      <button
+        className={className}
+        title={title}
+        onClick={() => setTriggered(true)}
+      >
+        <Download className="w-4 h-4" />
+      </button>
+    )
+  }
+
+  return (
+    <PDFDownloadLink document={<QuotePDF quote={quote} />} fileName={fileName}>
+      {({ loading: pdfLoading, url, error }) => {
+        if (error) return (
+          <button className={className} title="PDF error — retry" onClick={() => setTriggered(false)}>
+            <Download className="w-4 h-4 text-red-400" />
+          </button>
+        )
+        return (
+          <button className={className} title={pdfLoading ? 'Preparing PDF…' : 'Download PDF'} disabled={pdfLoading}>
+            <Download className={`w-4 h-4 ${pdfLoading ? 'animate-pulse text-gold-300' : ''}`} />
+          </button>
+        )
+      }}
+    </PDFDownloadLink>
+  )
+}
 
 const STATUS_STYLES = {
   draft:    'bg-gray-700/50 text-gray-400',
@@ -300,7 +344,7 @@ function EditModal({ quote, onClose, onSaved }) {
             </button>
             <PDFDownloadLink document={<QuotePDF quote={quoteDataForPdf} />} fileName={pdfFileName}>
               {({ loading: pdfLoading }) => (
-                <button className="btn-ghost flex items-center gap-2 flex-1 justify-center">
+                <button className="btn-ghost flex items-center gap-2 flex-1 justify-center" disabled={pdfLoading}>
                   <Download className="w-4 h-4" />
                   {pdfLoading ? 'Preparing…' : 'Download PDF'}
                 </button>
@@ -314,22 +358,44 @@ function EditModal({ quote, onClose, onSaved }) {
 }
 
 // ── Main Archive Component ─────────────────────────────────────────────────────
+const PAGE_SIZE = 50
+
 export default function QuoteHistory() {
   const [quotes, setQuotes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(false)
+  const [offset, setOffset] = useState(0)
   const [expanded, setExpanded] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [editingQuote, setEditingQuote] = useState(null)
 
   const load = async () => {
     setLoading(true)
+    setOffset(0)
     try {
-      const { data } = await api.get('/api/quotations')
+      const { data } = await api.get(`/api/quotations?limit=${PAGE_SIZE}&offset=0`)
       setQuotes(data)
+      setHasMore(data.length === PAGE_SIZE)
     } catch {
       toast.error('Failed to load quotations')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadMore = async () => {
+    setLoadingMore(true)
+    const nextOffset = offset + PAGE_SIZE
+    try {
+      const { data } = await api.get(`/api/quotations?limit=${PAGE_SIZE}&offset=${nextOffset}`)
+      setQuotes(prev => [...prev, ...data])
+      setOffset(nextOffset)
+      setHasMore(data.length === PAGE_SIZE)
+    } catch {
+      toast.error('Failed to load more quotations')
+    } finally {
+      setLoadingMore(false)
     }
   }
 
@@ -468,20 +534,13 @@ export default function QuoteHistory() {
                       <Pencil className="w-4 h-4" />
                     </button>
 
-                    {/* Download */}
-                    <PDFDownloadLink
-                      document={<QuotePDF quote={q} />}
+                    {/* Download — lazy: PDF worker only starts when this button is clicked */}
+                    <LazyPDFButton
+                      quote={q}
                       fileName={pdfFileName(q)}
-                    >
-                      {({ loading: pdfLoading }) => (
-                        <button
-                          className="p-2 text-gray-500 hover:text-gold-400 hover:bg-gold-400/10 rounded-lg transition-colors"
-                          title="Download PDF"
-                        >
-                          <Download className="w-4 h-4" />
-                        </button>
-                      )}
-                    </PDFDownloadLink>
+                      className="p-2 text-gray-500 hover:text-gold-400 hover:bg-gold-400/10 rounded-lg transition-colors"
+                      title="Download PDF"
+                    />
 
                     {/* Delete */}
                     <button
@@ -559,6 +618,21 @@ export default function QuoteHistory() {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Load More */}
+      {hasMore && !loading && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="btn-ghost flex items-center gap-2 !py-2 !px-6"
+          >
+            {loadingMore
+              ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Loading…</>
+              : <><RefreshCw className="w-3.5 h-3.5" /> Load More</>}
+          </button>
         </div>
       )}
 

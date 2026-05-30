@@ -59,9 +59,15 @@ export default function CreateQuotation({ onSaved }) {
   const [showClientSug, setShowClientSug] = useState(false)
   const clientSugRef = useRef(null)
 
-  // Fetch once on mount — pull unique clients from saved quotations
+  // Fetch once on mount — pull unique clients from saved quotations.
+  // Result is cached in sessionStorage so navigating back doesn't re-fetch.
+  const SESSION_CLIENTS_KEY = 'ss_client_cache'
   useEffect(() => {
-    api.get('/api/quotations').then(({ data }) => {
+    const cached = sessionStorage.getItem(SESSION_CLIENTS_KEY)
+    if (cached) {
+      try { setAllClients(JSON.parse(cached)); return } catch { /* ignore bad cache */ }
+    }
+    api.get(`/api/quotations?limit=200&offset=0`).then(({ data }) => {
       // Deduplicate by client_name (case-insensitive), keep latest occurrence
       const seen = new Map()
       data.forEach(q => {
@@ -77,7 +83,9 @@ export default function CreateQuotation({ onSaved }) {
           })
         }
       })
-      setAllClients([...seen.values()])
+      const clients = [...seen.values()]
+      setAllClients(clients)
+      sessionStorage.setItem(SESSION_CLIENTS_KEY, JSON.stringify(clients))
     }).catch(() => { /* silent — autocomplete is a nice-to-have */ })
   }, [])
 
@@ -128,10 +136,14 @@ export default function CreateQuotation({ onSaved }) {
   const [lines, setLines] = useState(savedDraft?.lines ?? [])
   const [saving, setSaving] = useState(false)
 
-  // ── Auto-save draft to localStorage whenever key fields change ───────────
+  // ── Auto-save draft to localStorage (debounced 500ms) ──────────────────
+  // Debouncing prevents JSON.stringify + localStorage.setItem on every keystroke
   useEffect(() => {
-    const draft = { quoteName, client, notes, taxInclusive, terms, lines }
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    const t = setTimeout(() => {
+      const draft = { quoteName, client, notes, taxInclusive, terms, lines }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+    }, 500)
+    return () => clearTimeout(t)
   }, [quoteName, client, notes, taxInclusive, terms, lines])
 
   const clearDraft = () => {
